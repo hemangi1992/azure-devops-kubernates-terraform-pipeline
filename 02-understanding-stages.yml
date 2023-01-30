@@ -11,7 +11,7 @@ stages:
     - job: FirstJob
       steps:
         - bash: echo build started for First job.
-        - bash: echo vaiable val -- ${PipelineLevelVariable}
+        - bash: echo vaiable val -- $(PipelineLevelVariable)
     - job: SecondJob
       steps:
         - bash: echo build started for Second job.     
@@ -22,7 +22,7 @@ stages:
   jobs:
     - job: DevDeployJob
       steps:
-        - bash:  echo ${environment} deploy job started.
+        - bash:  echo $(environment) deploy job started.
 - stage: QADeploy
   variables:
     environment: QA
@@ -30,13 +30,13 @@ stages:
   jobs:
     - job: QADeployJob
       steps:
-        - bash: echo ${environment} deploy job started.
+        - bash: echo $(environment) deploy job started.
 - stage: ProdDeploy
   variables:
     environment: Prod
   jobs:
     - job: ProdDeployJob
       steps:
-        - bash: echo ${environment} Deploy Job stated.
+        - bash: echo $(environment) Deploy Job stated.
   
 
