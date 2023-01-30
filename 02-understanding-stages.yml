@@ -8,25 +8,25 @@ pool:
 stages:
 - stage: build
   jobs:
-    - job: First-Job
+    - job: FirstJob
       steps:
         - bash: echo build started for First job.
-    - job: Second-Job
+    - job: SecondJob
       steps:
         - bash: echo build started for Second job.     
-- stage: Dev-Deploy
+- stage: DevDeploy
   jobs:
-    - job: Dev-Deploy-job
+    - job: DevDeployJob
       steps:
         - bash:  echo Dev deploy job started.
-- stage: QA-Deploy
+- stage: QADeploy
   jobs:
-    - job: QA-Deploy-job
+    - job: QADeployJob
       steps:
         - bash: echo QA deploy job started.
-- stage: Prod- Deploy
+- stage: ProdDeploy
   jobs:
-    - job: Prod-Deploy-job
+    - job: ProdDeployJob
       steps:
         - bash: echo Prod Deploy Job stated.
   
