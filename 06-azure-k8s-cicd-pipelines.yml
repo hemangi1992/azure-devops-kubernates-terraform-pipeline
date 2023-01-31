@@ -1,0 +1,69 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: 22 #'$(Build.BuildId)'
+
+#stage1
+
+#build docker image
+
+#publish k8s files
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # - task: Docker@2
+    #   inputs:
+    #     containerRegistry: 'renish-docker-hub'
+    #     repository: 'renish1311/currency-exchange-devops'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingdirectory)'
+        Contents: '**/*.yaml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+
+
+
+#stage2 
+# download k8s files
+#deploy to k8s cluster with docker image.
+- stage: Deploy
+  displayName: Deploy image
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        itemPattern: '**/*.yaml'
+        targetPath: '$(System.ArtifactsDirectory)'
+
+    - task: KubernetesManifest@0
+      inputs:
+         action: 'deploy'
+         kubernetesServiceConnection: 'azure-k8s-connection'
+         namespace: 'default'
+         manifests: '$(System.ArtifactsDirectory)/configuration/kubernates/deployment.yaml'
+         containers: 'renish1311/currency-exchange-devops:$(tag)'
